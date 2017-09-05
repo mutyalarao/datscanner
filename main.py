@@ -17,7 +17,8 @@ import string
 import os, os.path
 import json
 import cherrypy
-
+import sys
+import recordParser
 
 class launcher(object):
     @cherrypy.expose
@@ -58,5 +59,10 @@ if __name__ == '__main__':
                 'tools.staticdir.dir':'./static'
             }
     }
-    webapp =  launcher()
-    cherrypy.quickstart(webapp,'/',conf)
+    if (len(sys.argv) > 0):
+        fileName=sys.argv[1]
+
+        recordParser.formatRecords(recordParser.parse(fileName))
+    else:
+        webapp =  launcher()
+        cherrypy.quickstart(webapp,'/',conf)
