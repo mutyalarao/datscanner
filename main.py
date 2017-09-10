@@ -21,9 +21,14 @@ import sys
 import recordParser
 
 class launcher(object):
+    def __init__(self):
+        self.recordMap = {}
+        self.recordList = []
+
+
     @cherrypy.expose
     def index(self):
-        return open('./views/index.html')
+        return open('./views/index_vue.html')
 
     @cherrypy.expose
     def generate(self, length=8):
@@ -40,12 +45,24 @@ class launcher(object):
     @cherrypy.tools.accept(media="application/json")
     def api(self, **kwargs):
         if cherrypy.request.method == "POST":
-            inp = cherrypy.request.json
-            print(inp)
-        #inp = cherrypy.request.json
-        print "hiii"
-        result = {"recordList":["ps_job","ps_person"]}
-        return result
+            postInput = cherrypy.request.json
+            print(postInput)
+            #inp = cherrypy.request.json
+            #print "hiii" + inp['filePath']
+
+            if postInput['command']=='openfile':
+                self.recordMap = recordParser.parse(postInput['filePath'])
+                self.recordList = []
+                for r in self.recordMap:
+                    self.recordList.append(r)
+
+                result = {"recordList":self.recordList}
+                return result
+
+            if postInput['command'] == 'record':
+                print(postInput['recordName'])
+                result = recordParser.formatRecords(self.recordMap,recordName=postInput['recordName'])
+                return {"recordData":result}
 
 
 if __name__ == '__main__':
@@ -59,9 +76,8 @@ if __name__ == '__main__':
                 'tools.staticdir.dir':'./static'
             }
     }
-    if (len(sys.argv) > 0):
+    if (len(sys.argv) > 1):
         fileName=sys.argv[1]
-
         recordParser.formatRecords(recordParser.parse(fileName))
     else:
         webapp =  launcher()

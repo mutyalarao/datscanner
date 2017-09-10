@@ -1,4 +1,4 @@
-
+import re
 
 
 
@@ -41,25 +41,32 @@ def extractRecords(chunks):
 
     return recordMap
 
-def formatRecords(recordMap):
+def formatRecords(recordMap,recordName = ""):
     html = "<html><body>"
-    fout = open("test.html","w")
+    #fout = open("test.html","w")
+    table = ""
+    header = ""
+    print("recordName="+recordName)
     for r in recordMap:
         print(r)
         print("###")
         print(recordMap[r]['rows'][1:200])
         print('@@@@')
+
+        if recordName != "" and recordName != r :
+            continue
+
         #print(recordMap[r]['header'])
-        heading = "<h2>" + r + "</h2>"
         table="<table>"
         #header = '<tr>'
         #for h in recordMap[r]['header']:
         #    header = header + '<th>' + h + '</th>'
         #header = header + '</tr>'
-        header = '<tr><th>' + recordMap[r]['header'].replace('~~~','</th><th>') + '</th></tr>'
+        header = '<tr class="recordheader"><th>' + recordMap[r]['header'].replace('~~~','</th><th>') + '</th></tr>'
         #table = table + header
         #fout.write()
-        rows = '<tr><td>' + recordMap[r]['rows'].replace('//','</td></tr><tr><td>').replace(',','</td><td>') + '</td></tr>'
+        rows = '<tr class="recordrow"><td>' + recordMap[r]['rows'].replace('//','</td></tr><tr><td>').replace(',','</td><td>') + '</td></tr>'
+        rows = ''.join(''.join(re.split('[AB]\(',rows)).replace(')','').split('\n'))
         #for row in recordMap[r]['rows']:
         #    rows = rows + '<tr>'
             #for cell in row.split(','):
@@ -67,8 +74,9 @@ def formatRecords(recordMap):
                 #print(rows)
         #    rows = rows + '</tr>'
         table = table + header + rows +'</table>'
-        html = html + heading + table
-    html = html + '</body></html>'
-    fout.write(html)
-    fout.close()
-    return html
+        #html = html + heading + table
+    #html = html + '</body></html>'
+    #fout.write(html)
+    #fout.close()
+
+    return table

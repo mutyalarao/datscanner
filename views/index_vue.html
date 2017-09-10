@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Welcome to DatScanner</title>
+    <link href = "static/bootstrap/css/bootstrap.min.css" rel = "stylesheet">
+    <script src="static/js/jquery.js"></script>
+    <script src="static/js/vue.js"></script>
+    <style>
+    .recordlist {
+      float:left;
+    }
+    .recordButton{
+      font-size: 12px;
+    }
+      table,tr, th, td { border-width: 2px;
+        border-style: solid;
+      }
+      .recordheader{
+
+        position : -webkit-sticky;
+        position : sticky;
+
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <div id="app">
+      <span>{{filePath}}</span>
+       <div class="jumbotron">
+
+            <fileinput label="Select a file"  :open-File="openFile"></fileinput>
+
+        </div>
+        <div v-show="recordList.length > 0" class="recordlist jumbotron">
+
+              <recordlist class="recordButton" :class="{'btn-info' : recordname == selectedRecord}"
+               v-for="recordname in recordList" :record-name="recordname" :load-record="loadRecord"></recordlist>
+
+          <div  v-show= "recordDataHtml.length  >0"  class="recorddata">
+            <div v-html="recordDataHtml" ></div>
+          </div>
+        </div>
+        </div>
+
+<!---- All code goes above this only -->
+  <script type="text/javascript" src="static/js/home_vue.js"></script>
+  </body>
+</html>
